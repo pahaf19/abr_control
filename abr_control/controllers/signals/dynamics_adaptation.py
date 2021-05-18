@@ -68,21 +68,15 @@ class DynamicsAdaptation:
         tau_output=0.2,
         **kwargs,
     ):
+        # set up means and variances to be same dimensionality as original input signal
+        self.variances = np.ones(n_input) if variances is None else np.asarray(variances)
+        self.means = np.zeros(n_input) if means is None else np.asarray(means)
 
         self.n_neurons = n_neurons
         self.n_ensembles = n_ensembles
         if spherical:
             n_input += 1
         self.spherical = spherical
-
-        # if only one of means or variances is defined
-        # define the other to have no effect on the data
-        if means is not None and variances is None:
-            variances = np.ones(means.shape)
-        elif means is None and variances is not None:
-            means = np.zeros(variances.shape)
-        self.means = np.asarray(means)
-        self.variances = np.asarray(variances)
 
         # synapse time constants
         self.tau_input = 0.012  # on input connection
@@ -201,10 +195,7 @@ class DynamicsAdaptation:
         training_signal : numpy.array
             the learning signal to drive adaptation
         """
-
-        # if means or variances was defined, self.means is not None
-        if self.means is not None:
-            input_signal = self.scale_inputs(input_signal)
+        input_signal = self.scale_inputs(input_signal)
 
         # store local copies to feed in to the adaptive population
         self.input_signal = input_signal
