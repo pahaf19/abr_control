@@ -175,7 +175,7 @@ class MujocoConfig:
         if u is not None:
             self.sim.data.ctrl[:] = np.copy(u)
 
-        # move simulation forward to calculate new kinamtic information
+        # move simulation forward to calculate new kinematic information
         self.sim.forward()
 
         return old_q, old_dq, old_u
